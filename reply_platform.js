@@ -32,4 +32,4 @@ function getYesNo(question, yes, no){
 
 
 module.exports.getYesNo =  getYesNo;
-module.exports.yesno;
+module.exports.yesno = yesno;

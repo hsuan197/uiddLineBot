@@ -30,9 +30,22 @@ connection.connect(err => {
 })
 
 //get message
+const platform = require('./reply_platform.js')
 bot.on('message', function (event) {
     if (event.message.type=="text"){
-      event.reply(event.message.text);
+      reply = ""
+      switch (event.message.text){
+        case "q": 
+          reply = platform.getYesNo("q", "q1", "q2");
+          break;
+        case "w":
+          reply = platform.getYesNo("w", "w1", "w2");
+          break;
+        default:
+          reply = "QwQ"
+      }
+
+      event.reply(reply);
     }
 });
 
