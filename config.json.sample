@@ -1,5 +1,5 @@
 {
-  "port": 13000,
+  "port": ,
   "ssl":{
     "ca": "/home/uidd2019/ssl/ca_bundle.crt",
     "key": "/home/uidd2019/ssl/private.key",
