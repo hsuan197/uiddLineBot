@@ -1,4 +1,4 @@
-# TOC Project 2017
+# Linebot
   * install
     `yarn`
   * make your config.json
