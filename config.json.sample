@@ -1,0 +1,19 @@
+{
+  "port": 13000,
+  "ssl":{
+    "ca": "/home/uidd2019/ssl/ca_bundle.crt",
+    "key": "/home/uidd2019/ssl/private.key",
+    "cert": "/home/uidd2019/ssl/certificate.crt"
+  },
+  "mysql": {
+    "database": "uidd2019_groupD",
+    "host": "localhost",
+    "password": "ku68csobp5vkmpj8",
+    "user": "uidd2019_groupD"
+  },
+	"line":{
+  	"channelId": "",
+  	"channelSecret": "",
+    "channelAccessToken": ""
+  }
+}
