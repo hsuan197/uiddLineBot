@@ -36,10 +36,12 @@ function constrain(num, min = -1, max = -1){
   return (min < 0 || num >= min) && (max < 0 || num <= max)
 }
 
-var questions = ["總樓?", "現在樓?", "平面結構?", "劣化種類?", "空間類型?", "劣化部位?", "長寬?", "拍照!!"];
+var questions = ["總樓?", "現在樓?", "平面結構?", "入口?" , "樓梯?" ,"劣化種類?", "空間類型?", "劣化部位?", "長寬?", "拍照!!"];
 var constrains = [
   (num)=>{return constrain(num, 0)},
   (num)=>{return constrain(num)},
+  (num)=>{return constrain(num, 0, 3)},
+  (num)=>{return constrain(num, 0, 3)},
   (num)=>{return constrain(num, 0, 3)},
   (num)=>{return constrain(num, 0, 4)},
   (num)=>{return constrain(num, 0, 3)},

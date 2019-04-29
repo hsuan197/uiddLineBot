@@ -34,12 +34,21 @@ connection.connect(err => {
     process.exit()
   }
 })
+function WriteDB(the_record){ 
+  connection.query('select count(id) from  record', function (error, results, fields) {
+    if (error) throw error
+    var num = results[0]['count(id)'];
+    console.log(num);
+    connection.query(`INSERT INTO record(lineId, id) VALUES ("${the_record.id}", ${num});`);
+    connection.query(`INSERT INTO location(id, lat, lng, statu, address) VALUES (${num}, ${the_record.lat}, ${the_record.lon}, '1', '${the_record.address}');`);
+    connection.query(`INSERT INTO house(id, total_floor, now_floor, shape, door, stair) VALUES (${num},  '${the_record.data[0]}', '${the_record.data[1]}', '${the_record.data[2]}', '${the_record.data[3]}', '${the_record.data[4]}');`);
+  })
+  console.log('write database ');
+  console.log(the_record)
+}
 
 
-connection.query('select count(id) from  record', function (error, results, fields) {
-  if (error) throw error
-  console.log('tables: ', results[0]['count(id)'])
-})
+const total_qNum = 10
 
 //temporary record
 var tmp_records = {}
@@ -47,7 +56,7 @@ function Record(userId){
   this.id = userId;
   this.qNum = 0;
   this.qStatu = -1;
-  this.data = [-1, -1, -1, -1, -1, -1, -1, 0];
+  this.data = [-1, -1, -1, -1, -1, -1, -1, -1, -1, 0];
   this.address = "";
   this.lon = 0;
   this.lat = 0;
@@ -71,14 +80,14 @@ bot.on('message', function (event) {
   if (event.message.type=="text"){
     var mesg = event.message.text;
     var reply = "";
-    if(the_record.qNum < 7){
+    if(the_record.qNum < total_qNum - 1){
       switch(the_record.qStatu){
         case -1:
           reply = "請傳送位置";
           break;
         case 2:
           if(mesg == "確定"){
-            if(++the_record.qNum == 7){
+            if(++the_record.qNum == total_qNum - 1){
               reply = platform.qs[the_record.qNum];
               break;
             }
@@ -98,32 +107,31 @@ bot.on('message', function (event) {
       }
       console.log(the_record.data);
     }
-    else if (the_record.qNum == 7){
-      if (the_record.qStatu = 1)
+    else if (the_record.qNum == total_qNum - 1){
+      if (the_record.qStatu < 3)
         reply = "再拍喔><";
-      switch(mesg){
-        case "繼續記錄":
-          the_record.qNum = 3;
-          reply = platform.qs[the_record.qNum];
-          the_record.qStatu = 1;
-          break;
-        case"結束":
-          reply = "謝謝><";
-          
-          connection.query('select count(id) from  record', function (error, results, fields) {
-            if (error) throw error
-            var num = results[0]['count(id)'];
-            connection.query(`INSERT INTO record(lineId, id) VALUES ("${the_record.id}", ${num});`);
-          })
-
-          break;
+      else{
+        switch(mesg){
+          case "繼續記錄":
+            the_record.qNum = 5;
+            reply = platform.qs[the_record.qNum];
+            the_record.qStatu = 1;
+            break;
+          case"結束":
+            reply = "謝謝><";
+            WriteDB(the_record);
+            delete tmp_records[user];
+            break;
+          default:
+            reply = platform.getYesNo("紀錄其他裂化現象?", "繼續記錄" , "結束")
+        }
       }
     }
     event.reply(reply);
   }
 
   else if (event.message.type == "image"){
-    if(the_record.qNum != 7)
+    if(the_record.qNum != total_qNum - 1)
       return;
 
     //prepare dir
@@ -133,17 +141,17 @@ bot.on('message', function (event) {
 
     //prepare file path
     var file_path = dir + '/';
-    for(let i = 0; i < 7; i++)
+    for(let i = 0; i < total_qNum - 1; i++)
       file_path += the_record.data[i].toString() +  '_';
-    file_path += (the_record.data[7]>>1).toString() + '_'; //+ (the_record.data[7]%2) +'.jpg';
+    file_path += ((++the_record.data[total_qNum - 1])>>1).toString() + '_'; //+ (the_record.data[7]%2) +'.jpg';
     if(the_record.qStatu == 2){
       file_path += '0.jpg';
       var reply = '請再拍一張近照';
       the_record.qStatu = 1;
     } else{
       file_path += '1.jpg';
-      var reply = platform.getYesNo("紀錄其他裂化現象?", "繼續記錄" , "結束")
-      the_record.qStatu = 2;
+      reply = platform.getYesNo("紀錄其他裂化現象?", "繼續記錄" , "結束")
+      the_record.qStatu = 3;
     }
     event.reply(reply);
 
@@ -157,6 +165,7 @@ bot.on('message', function (event) {
       	f.end();
     	});
   	});
+    console.log(the_record);  
   }
 
   //get location
