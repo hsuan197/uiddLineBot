@@ -25,6 +25,58 @@ const client = new line.Client({
   channelAccessToken: config.line.channelAccessToken
 });
 
+//google drive
+const {google} = require('googleapis');
+const oAuth2Client = new google.auth.OAuth2(config.Gdrive.client_id, config.Gdrive.client_secret, config.Gdrive.redirect_uri);
+oAuth2Client.setCredentials(config.Gdrive.token);
+
+function Upload(drive, folderId, path, filename){
+	var fileMetadata = {
+  	'name': filename,
+  	parents: [folderId]
+	};
+	var media = {
+  	mimeType: 'image/jpg',
+  	body: fs.createReadStream(path + filename)
+	};
+	drive.files.create({
+  	resource: fileMetadata,
+  	media: media,
+  	fields: 'id'
+	}, function (err, file) {
+  	if (err)
+    	console.error(err);
+	  else{
+      fs.unlinkSync(path + filename);
+    }
+  });
+}
+
+function CreateFolder(auth, folder, userId){
+  const drive = google.drive({version: 'v3', auth});
+	var fileMetadata = {
+  	'name': folder,
+    parents:['1GGxFX7j3d3x9GEDY2ihlBAWEQHYVXf0l'],
+  	mimeType: 'application/vnd.google-apps.folder'
+	};
+	drive.files.create({
+  	resource: fileMetadata,
+  	fields: 'id'
+	}, function (err, file) {
+  	if (err)
+    	console.error(err);
+  	else {
+      var folderId = file.data.id;
+      var path = './tmp/' + userId + '/'
+      console.log(userId);
+      fs.readdirSync(path).forEach(file => {
+        console.log(file);
+			  Upload(drive, folderId, path, file);
+      });
+  	}
+	});
+}
+
 //mysql
 const mysql = require('mysql')
 const connection = mysql.createConnection(config.mysql)
@@ -34,24 +86,23 @@ connection.connect(err => {
     process.exit()
   }
 })
-function WriteDB(the_record){ 
+
+//write database & upload images & delete local images
+function WriteDB(the_record){
+  console.log('write')
   connection.query('select count(id) from  record', function (error, results, fields) {
     if (error) throw error
     var num = results[0]['count(id)'];
-    console.log(num);
     connection.query(`INSERT INTO record(lineId, id) VALUES ("${the_record.id}", ${num});`);
     connection.query(`INSERT INTO location(id, lat, lng, statu, address) VALUES (${num}, ${the_record.lat}, ${the_record.lon}, '1', '${the_record.address}');`);
     connection.query(`INSERT INTO house(id, total_floor, now_floor, shape, door, stair) VALUES (${num},  '${the_record.data[0]}', '${the_record.data[1]}', '${the_record.data[2]}', '${the_record.data[3]}', '${the_record.data[4]}');`);
+    CreateFolder(oAuth2Client, num.toString(), the_record.id);
   })
-  console.log('write database ');
-  console.log(the_record)
 }
-
-
-const total_qNum = 10
 
 //temporary record
 var tmp_records = {}
+const total_qNum = 10
 function Record(userId){
   this.id = userId;
   this.qNum = 0;
@@ -71,6 +122,11 @@ bot.on('message', function (event) {
   var user = event.source.userId;
   if (!(user in tmp_records)){
     tmp_records[user] = new Record(user);
+
+    //prepare dir
+    var dir = './tmp/' + user;
+    if (!fs.existsSync(dir))
+      fs.mkdirSync(dir);
   }
 
   //the record for this user
@@ -118,7 +174,9 @@ bot.on('message', function (event) {
             the_record.qStatu = 1;
             break;
           case"結束":
+            console.log('???');
             reply = "謝謝><";
+            console.log('ending');
             WriteDB(the_record);
             delete tmp_records[user];
             break;
@@ -136,17 +194,13 @@ bot.on('message', function (event) {
 
     //prepare dir
     var dir = './tmp/' + user;
-    if (!fs.existsSync(dir))
-      fs.mkdirSync(dir);
-
-    //prepare file path
     var file_path = dir + '/';
-    for(let i = 0; i < total_qNum - 1; i++)
+    for(let i = 5; i < total_qNum - 1; i++)
       file_path += the_record.data[i].toString() +  '_';
-    file_path += ((++the_record.data[total_qNum - 1])>>1).toString() + '_'; //+ (the_record.data[7]%2) +'.jpg';
+    file_path += ((++the_record.data[total_qNum - 1])>>1).toString() + '_'; 
     if(the_record.qStatu == 2){
       file_path += '0.jpg';
-      var reply = '請再拍一張近照';
+      reply = '請再拍一張近照';
       the_record.qStatu = 1;
     } else{
       file_path += '1.jpg';
@@ -165,7 +219,6 @@ bot.on('message', function (event) {
       	f.end();
     	});
   	});
-    console.log(the_record);  
   }
 
   //get location
