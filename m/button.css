@@ -1,0 +1,148 @@
+body {
+  background-color: #f2f2f2;
+ // padding: 10px;
+  margin: 0;
+}
+
+.middle {
+  padding: 10px;
+}
+
+#help {
+  float: right;
+}
+
+#save {
+  float: right;
+  display: none;
+}
+
+.addBtn {
+  display: none;
+}
+
+.addLad {
+  display: none;
+}
+
+#large {
+  display: none;
+}
+
+#small {
+  display: none;
+}
+
+#rotate {
+  display: none;
+}
+
+.helplist {
+  position: absolute;
+  background-color: yellow;
+  width: 300px;
+  height: 400px;
+  z-index: 999;
+  display: none;
+  margin: 0 auto;
+  top:0;
+  //margin-left: auto;
+  //margin-right: auto;
+  //left: 50%;
+  //right: 50%;
+  border-radius: 15px;
+}
+
+/*.canvas-wrapper{
+  position: absolute;
+  z-index: -1;
+  //margin: 0 auto;
+  display: block;
+  width:301px;
+  height:401px;
+  left: 50%;
+  margin-left: -150px;
+  top: 100px;
+}
+
+.canvas-block{
+  position: relative;
+  z-index: -1;
+  //margin: 0 auto;
+  display: block;
+  width:302px;
+  height:430px;
+  left: 50%;
+  margin-left: -150px;
+  overflow: hidden;
+}
+*/
+#canvas {
+  left:50%;
+}
+
+#lowbutton {
+  position: relative;
+  margin: 0 auto;
+  width: 220px;
+}
+
+.canvas-container { 
+  margin:0 auto ;
+}
+
+#textmode {
+	position: absolute;
+	display: inline;
+	width: 50px;
+	z-index: 999;
+}
+
+.addtext {
+  display: none;
+}
+
+.text block {
+  visibility: hidden;
+}
+
+#laddermode {
+	position: absolute;
+	display: inline;
+	width: 50px;
+	z-index: 999;
+}
+
+.back {
+  position: relative;
+  top: 0;
+  background-color: #2b535c;
+  width: 100%;
+  display: none;
+  border: none;
+  text-align: center;
+  color: white;
+  font-size: 20px;
+  height: 5%;
+}
+
+.next {
+  position: absolute;
+  background-color: #2b535c;
+  bottom: 0;
+  width: 100%;
+  border: none;
+  text-align: center;
+  color: white;
+  font-size: 20px;
+  height: 5%;
+}
+
+.helppic {
+  position: absolute;
+  z-index: 9999;
+  left: 50%;
+  transform: translate(-50%, 0);
+  top: 10%;
+  display: none;
+}

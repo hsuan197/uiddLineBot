@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>裂化表單</title>
+  <meta charset="UTF-8">
+
+  <link rel="stylesheet" href="https://apps.bdimg.com/libs/jquerymobile/1.4.5/jquery.mobile-1.4.5.min.css">
+  <link rel="stylesheet" href="./base.css">
+  <script src="https://apps.bdimg.com/libs/jquery/1.10.2/jquery.min.js"></script>
+  <script src="https://apps.bdimg.com/libs/jquerymobile/1.4.5/jquery.mobile-1.4.5.min.js"></script>
+</head>
+<body>
+  
+  <div data-role="main" class="ui-content">
+
+    <legend style="font-size:2.7rem">裂化照片</legend>
+      <img id = "pic_1" src="https://drive.google.com/uc?export=view&id=1E_TBdyNABrwwPNng-AnaqxmzYUbG4jHt">
+      <img id = "pic_2" src="https://drive.google.com/uc?export=view&id=1UdVOz3CCldnEfY6vCU_wdjDOwgSOjWkP">
+
+    <form method="post" action="demoform.php">
+      <fieldset data-role="controlgroup" data-type="horizontal">
+      <legend style="font-size:2.7rem">裂化類別：</legend>
+        <label for="ct0" style="font-size:2.7rem">裂痕</label>
+        <input type="radio" name="ct" id="ct0" value="ct0">
+        <label for="ct1" style="font-size:2.7rem">剝落</label>
+        <input type="radio" name="ct" id="ct1" value="ct1">
+        <!--<label for="ct3" style="font-size:2.7rem">裂痕 + 剝落</label>
+        <input type="radio" name="ct" id="ct3" value="ct3">-->
+        <label for="ct2" style="font-size:2.7rem">鋼筋外露</label>
+        <input type="radio" name="ct" id="ct2" value="ct2"> 
+      </fieldset>
+    </form>
+
+    <legend style="font-size:2.7rem">劣化部位</legend>
+    <a href="#myPopup" data-rel="popup" class="ui-btn ui-btn-inline ui-corner-all ui-icon-check ui-btn-icon-left" style="font-size:2.7rem">裂化部位</a>
+    <div data-role="popup" id="myPopup" class="ui-content" style="min-width:250px;">
+      <form method="post" action="demoform.php">
+        <div>
+          <div data-role="main" class="ui-content">
+            <form method="post" action="demoform.php">
+              <fieldset data-role="controlgroup">
+                  <label for="cp1_0" style="font-size:2.7rem">柱</label>
+                  <input type="checkbox" name="cp1" id="cp1_0" value="cp1_0">
+                  <label for="cp1_1" style="font-size:2.7rem">梁</label>
+                  <input type="checkbox" name="cp1" id="cp1_1" value="cp1_1">
+                  <label for="cp1_2" style="font-size:2.7rem">牆</label>
+                  <input type="checkbox" name="cp1" id="cp1_2" value="cp1_2">  
+                  <label for="cp1_3" style="font-size:2.7rem">樓板</label>
+                  <input type="checkbox" name="cp1" id="cp1_3" value="cp1_3">  
+                  <label for="cp1_4" style="font-size:2.7rem">開口部</label>
+                  <input type="checkbox" name="cp1" id="cp1_4" value="cp1_4">  
+              </fieldset>
+            </form>
+          </div>
+        </div>
+      </form>
+    </div>
+
+    <a href="#myPopup2" data-rel="popup" class="ui-btn ui-btn-inline ui-corner-all ui-icon-check ui-btn-icon-left" style="font-size:2.7rem">轉角處</a>
+    <div data-role="popup" id="myPopup2" class="ui-content" style="min-width:250px;">
+      <form method="post" action="demoform.php">
+        <div>
+          <div data-role="main" class="ui-content">
+            <form method="post" action="demoform.php">
+              <fieldset data-role="controlgroup">
+                  <label for="cp2_0" style="font-size:2.7rem">柱</label>
+                  <input type="checkbox" name="cp2" id="cp2_0" value="cp2_0">
+                  <label for="cp2_1" style="font-size:2.7rem">梁</label>
+                  <input type="checkbox" name="cp2" id="cp2_1" value="cp2_1">
+                  <label for="cp2_2" style="font-size:2.7rem">牆</label>
+                  <input type="checkbox" name="cp2" id="cp2_2" value="cp2_2">  
+                  <label for="cp2_3" style="font-size:2.7rem">樓板</label>
+                  <input type="checkbox" name="cp2" id="cp2_3" value="cp2_3">  
+                  <label for="cp2_4" style="font-size:2.7rem">開口部</label>
+                  <input type="checkbox" name="cp2" id="cp2_4" value="cp2_4">  
+              </fieldset>
+            </form>
+          </div>
+        </div>
+      </form>
+    </div>
+
+    <fieldset data-role="controlgroup">
+        <legend style="font-size:2.7rem">內容</legend>
+          <label for="info0" style="font-size:2.7rem">寬度大於0.3cm</label>
+          <input type="checkbox" name="info" id="info0" value="info0">
+          <label for="info2" style="font-size:2.7rem">深度大於2.5cm</label>
+          <input type="checkbox" name="info" id="info2" value="info2">
+          <label for="info1" style="font-size:2.7rem">碎片大於1.5cm</label>
+          <input type="checkbox" name="info" id="info1" value="info1">  
+      </fieldset>
+
+
+    <div class="ui-field-contain">
+      <legend style="font-size:2.7rem">範圍</legend>
+        <label for="l" style="font-size:2.7rem">長度：</label>
+        <input type="text" name="l" id="l" style="font-size:2.7rem" value="">       
+        <label for="w" style="font-size:2.7rem">寬度：</label>
+        <input type="text" name="w" id="w" style="font-size:2.7rem" value=""> 
+      </div>
+
+    
+
+    <legend style="font-size:2.7rem">標記平面圖</legend>
+    <img id="pic_3" src="https://drive.google.com/uc?export=view&id=1PXTkBn2uY1mo5ghBU4B7ea10AnXnRSLS">
+    <button id = "submit" class="button" style="font-size:2.7rem">結束</button>
+  </div>
+  
+  <img id="pic_4" src="./imgs/placeholder.png">
+	<script src="https://d.line-scdn.net/liff/1.0/sdk.js"></script>
+  <script src="./liff-starter.js"></script>
+
+</body>
+</html>

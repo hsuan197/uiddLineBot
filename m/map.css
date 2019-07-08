@@ -1,0 +1,45 @@
+#mapid {height: 100vh}
+
+img{
+  height: 100px;
+}
+
+#l_arrow{
+  position:fixed;
+  top:50%;
+  left:3%;
+  z-index:9999;
+}
+
+#r_arrow{
+  position:fixed;
+  top:50%;
+  right:3%;
+  z-index:9999;
+}
+
+
+.mbtn{
+  color:#ffffff;
+  font-size:70px;
+  text-align:center;
+  vertical-align: middle;
+
+  position:fixed;
+  width: 100px;
+  height: 100px;
+  right:3%;
+  background-color:#2c555e;
+  border-radius:10px;
+  z-index:9999;
+}
+
+
+.pbtn1{
+  background-color:#ACBA9D;
+  color:#ffffff;
+}
+.pbtn2{
+  background-color:#EFB28c;
+  color:#ffffff;
+}

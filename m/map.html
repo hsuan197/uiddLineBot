@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>裂化地圖</title>
+  <meta charset="UTF-8">
+
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.4.0/dist/leaflet.css"
+  integrity="sha512-puBpdR0798OZvTTbP4A8Ix/l+A4dHDD0DGqYW6RQ+9jxkRFclaxxQb/SJAWZfWAkuyeQUytO7+7N4QKrDh+drA=="
+  crossorigin=""/>
+
+  <link rel="icon" href="img/marker.png" type="image/x-icon">
+  <link rel="stylesheet" href="./map.css">
+</head>
+<body>
+  <div id="mapid"></div>
+  <div id="l_arrow" onclick="lArrow()"><img id="ll" src="./img/left-arrow.png"></div>
+  <div id="r_arrow" onclick="rArrow()"><img src="./img/right-arrow.png"></div>
+
+  <div onclick="setLayer(0)" class="mbtn" style="top:30px" id="mbtn1">全</div>
+  <div onclick="setLayer(1)" class="mbtn" style="top:160px"id="mbtn2">新</div>
+  <div onclick="setLayer(2)" class="mbtn" style="top:290px"id="mbtn3">嚴</div>
+  <div onclick="setLayer(3)" class="mbtn" style="top:420px"id="mbtn4">未</div>
+</body>
+</html>
+
+<!-- Make sure you put this AFTER Leaflet's CSS -->
+<script src="https://unpkg.com/leaflet@1.4.0/dist/leaflet.js"
+  integrity="sha512-QVftwZFqvtRNi0ZyCtsznlKSWOStnDORoefr1enyq5mVL4tmKB3S/EnC3rRJcxCPavG10IcrVGSmPh6Qw5lwrg=="
+  crossorigin=""></script>
+<script src="https://d.line-scdn.net/liff/1.0/sdk.js"></script>
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+<script src="./map.js"></script>

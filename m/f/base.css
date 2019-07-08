@@ -1,0 +1,21 @@
+#pic_1{
+    margin-left: 8%;
+    width: 42%;
+}
+
+#pic_2{
+    margin-left: 4%;
+    width: 42%;
+}
+
+#pic_3{
+    width: 100%;
+}
+
+#pic_4{
+	width:100px;
+	height:100px;
+	position: absolute;
+	left: 0px;
+	top:-100px; 
+}
