@@ -42,6 +42,19 @@ connection.connect(err => {
   }
 })
 
+
+//listen
+var app = express();
+var linebotParser = bot.parser();
+app.post('/', linebotParser);
+
+app.use(express.static(`${__dirname}/webs`))
+var server = https.createServer(options, app).listen(port, function() {
+	console.log(`port: ${port}`);
+})
+
+
+
 //temporary record
 var tmp_records = {}
 const total_qNum = 6
@@ -317,17 +330,6 @@ bot.on('message', function (event) {
 bot.on('follow', (event)=>{
   event.reply(platform.getYesNo("是否開始檢測", "開始檢測", "取消"));
 })
-
-//listen
-var app = express();
-var linebotParser = bot.parser();
-app.post('/', linebotParser);
-
-app.use(express.static(`${__dirname}/m`))
-var server = https.createServer(options, app).listen(port, function() {
-	console.log(`port: ${port}`);
-})
-
 
 
 //write database & upload images & delete local images

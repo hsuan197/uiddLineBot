@@ -20,39 +20,9 @@ connection.query('CREATE TABLE IF NOT EXISTS crack (id INT, picId TINYINT, x FLO
 
 connection.query('CREATE TABLE IF NOT EXISTS floor_plan (id INT, floor TINYINT, fileId CHAR(33));')
 
-//connection.query('alter table location change address address varchar(100) character utf8;')
-//connection.query('drop table record')
-//connection.query('drop table location')
-//connection.query('drop table house')
-//connection.query('drop table crack')
-//show tables
-
 connection.query('show tables;', function (error, results, fields) {
   if (error) throw error
   console.log('show: ', results)
-})
-
-//connection.query('select * FROM floor_plan ');
-//connection.query('DELETE FROM floor_plan ');
-//connection.query('INSERT INTO location(id, lat, lng, statu, address) VALUES (2, 22.3, 121.4, "3", "???" );');
-/*
-connection.query('select * from record;', function (error, results, fields) {
-    if (error) throw error
-    console.log('tables: ', results)
-})
-connection.query('select * from location;', function (error, results, fields) {
-    if (error) throw error
-    console.log('tables: ', results)
-})
-connection.query('select * from house;', function (error, results, fields) {
-    if (error) throw error
-    console.log('tables: ', results)
-})
-*/
-
-connection.query('select * from floor_plan', function (error, results, fields) {
-    if (error) throw error
-    console.log('tables: ', results)
 })
 
 connection.end()

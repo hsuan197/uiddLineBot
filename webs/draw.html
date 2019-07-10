@@ -1,0 +1,86 @@
+<!doctype html>
+<html>
+  <head>
+
+        <title>平面圖繪製</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <script src="fabric/dist/fabric.js"></script>
+        <link rel="stylesheet" href="draw.css">
+        <link rel="icon" href="map/marker.png" type="image/x-icon">
+    </head>
+    <body>
+      <div class="back" onclick="back()">返回編輯牆壁</div>
+
+
+      <div class="middle">
+        <img src="./draw/平面圖教學1.png" class="helppic 1" width="90%" onclick="hide()" />
+        <img src="./draw/平面圖教學2.png" class="helppic 2" width="90%" onclick="hide()" />
+        
+        <img src="./draw/牆文字icon.svg" id="addwall" width="50" onclick="Addwall()" />
+        
+        <div id="textmode">
+        <img src="./draw/字文字icon.svg" class="text" width="50" onclick="text()" />
+        <img src="./draw/客廳文字icon.svg" class="addtext 0" width="50" onclick="text1()" />
+        <img src="./draw/廚房文字icon.svg" class="addtext 1" width="50" onclick="text2()" />
+        <img src="./draw/浴室文字icon.svg" class="addtext 2" width="50" onclick="text3()" />
+        <img src="./draw/廁所文字icon.svg" class="addtext 3" width="50" onclick="text4()" />
+        <img src="./draw/房間文字icon.svg" class="addtext 4" width="50" onclick="text5()" />
+				</div>     		
+        
+        <img src="./draw/字文字icon.svg" class="text block" width="50"/>        
+        
+        <img src="./draw/說明icon.svg" id="help" width="50" onclick="help()" />
+        <img src="./draw/存文字icon.svg" id="save" width="50" onclick="savetoline()" />
+        
+        <!--img src="./draw/okicon.svg" class="save" id="save" width="50" onclick="clickOK()" /-->
+				
+        <img src="./draw/門文字icon.svg" class="addBtn" width="50" onclick="addItem1()" />
+				
+        <img src="./draw/窗文字icon.svg" class="addBtn" width="50" onclick="addItem2()" />
+				
+				<div id="laddermode">
+        <img src="./draw/梯文字icon.svg" class="addBtn" width="50" onclick="addLad()" />
+        <img src="./draw/折梯icon.svg" class="addLad 0" width="50" onclick="addItem3()" />
+        <img src="./draw/直梯icon.svg" class="addLad 1" width="50" onclick="addItem4()" />
+        <img src="./draw/剪刀梯icon.svg" class="addLad 2" width="50" onclick="addItem5()" />
+				</div>     		
+   
+        <div class="canvas-wrapper">
+          <canvas id="canvas"></canvas>
+        </div>
+
+
+        <div class="helplist">ppppp</div>
+
+        <div id="lowbutton">
+        
+        <img src="./draw/放大icon.svg" id="large" width="50" onclick="larger()" />
+        
+        <img src="./draw/縮小icon.svg" id="small" width="50" onclick="smaller()" />
+        
+        <img src="./draw/旋轉icon.svg" id="rotate" width="50" onclick="rotate()" />
+        
+        <img src="./draw/刪除icon.svg" id="delete" width="50" onclick="Delete()" />
+        </div>
+      </div>
+
+        <div class="next" onclick="next()">放置樓梯門窗</div>
+
+        <!--button type="button" id="saveCanvas" onclick="savetoline()">Save</button>
+        <button type="button" id="itemmode" onclick="Itemmode()">Item mode</button>
+        <button type="button" id="wallmode" onclick="Wallmode()">Wall mode</button-->
+        <img id="result">
+    </body>
+
+
+    <script src="https://d.line-scdn.net/liff/1.0/sdk.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script src="draw.js"></script>
+<!--script src="https://cdn.jsdelivr.net/npm/vconsole@3.2.0/dist/vconsole.min.js"></script>
+<script>
+  var vConsole = new VConsole();
+</script-->
+</html>

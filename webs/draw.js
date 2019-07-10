@@ -212,7 +212,7 @@ function text5(){
 
 
 function addItem1(){	
-fabric.Image.fromURL('./image/門.svg', function(img) {
+fabric.Image.fromURL('./draw/門.svg', function(img) {
     img.set({ 
       left: 250, 
       top: 250, 
@@ -234,7 +234,7 @@ fabric.Image.fromURL('./image/門.svg', function(img) {
 }
 
 function addItem2(){
-  fabric.Image.fromURL('./image/窗.svg', function(img) {
+  fabric.Image.fromURL('./draw/窗.svg', function(img) {
     img.set({ 
       left: 250, 
       top: 250, 
@@ -270,7 +270,7 @@ function addLad(){
 }
 
 function addItem3(){	
-fabric.Image.fromURL('./image/折梯.svg', function(img) {
+fabric.Image.fromURL('./draw/折梯.svg', function(img) {
     img.set({ 
       left: 250, 
       top: 250, 
@@ -294,7 +294,7 @@ fabric.Image.fromURL('./image/折梯.svg', function(img) {
 }
 
 function addItem4(){	
-fabric.Image.fromURL('./image/直梯.svg', function(img) {
+fabric.Image.fromURL('./draw/直梯.svg', function(img) {
     img.set({ 
       left: 250, 
       top: 250, 
@@ -318,7 +318,7 @@ fabric.Image.fromURL('./image/直梯.svg', function(img) {
 }
 
 function addItem5(){	
-fabric.Image.fromURL('./image/剪刀梯.svg', function(img) {
+fabric.Image.fromURL('./draw/剪刀梯.svg', function(img) {
     img.set({ 
       left: 250, 
       top: 250, 
@@ -591,12 +591,12 @@ function savetoline(){
 //*********************
 $('#save').mousedown(
     function(){
-      $(this).attr('src','./image/okicon_2.svg')
+      $(this).attr('src','./draw/okicon_2.svg')
     }
 )
 $('#save').mouseup(
     function(e){
-      $(this).attr('src','./image/okicon.svg')
+      $(this).attr('src','./draw/okicon.svg')
     }
 )
 

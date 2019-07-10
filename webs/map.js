@@ -18,35 +18,35 @@ var hNum;
 
 $(document).ready(function() {
   var bicon = L.icon({
-    iconUrl: 'img/marker_b.png',
+    iconUrl: 'map/marker_b.png',
     iconSize:     [120, 120],
     iconAnchor:   [60, 120],
     popupAnchor:  [0, -100] 
   });
 
   var gicon = L.icon({
-    iconUrl: 'img/marker_g.png',
+    iconUrl: 'map/marker_g.png',
     iconSize:     [120, 120],
     iconAnchor:   [60, 120],
     popupAnchor:  [0, -100] 
   }); 
 
 	var oicon = L.icon({
-    iconUrl: 'img/marker_o.png',
+    iconUrl: 'map/marker_o.png',
     iconSize:     [120, 120],
     iconAnchor:   [60, 120],
     popupAnchor:  [0, -100] 
   });
 
   var ricon = L.icon({
-    iconUrl: 'img/marker_r.png',
+    iconUrl: 'map/marker_r.png',
     iconSize:     [120, 120],
     iconAnchor:   [60, 120],
     popupAnchor:  [0, -100] 
   });
 
   var yicon = L.icon({
-    iconUrl: 'img/marker_y.png',
+    iconUrl: 'map/marker_y.png',
     iconSize:     [120, 120],
     iconAnchor:   [60, 120],
     popupAnchor:  [0, -100] 
