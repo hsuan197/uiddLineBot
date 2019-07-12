@@ -26,9 +26,9 @@ const {google} = require('googleapis');
 const oAuth2Client = new google.auth.OAuth2(config.Gdrive.client_id, config.Gdrive.client_secret, config.Gdrive.redirect_uri);
 oAuth2Client.setCredentials(config.Gdrive.token);
 const async = require('async');
-const tmpFolder = '1wRNkxOKTFkpuZTS_ZG9A-8hRpo1PyqTe';
-const picFolder = '12XEk5qMiKvH_SJHUmCS4jYEm2p1_qOjU';
-const floorPlanFolder = '1qhdvioeCNSI07nXycfr5SNvb6pjbabya';
+const tmpFolder = config.Gfolders.tmpFolder;
+const picFolder = config.Gfolders.picFolder;
+const floorPlanFolder = config.Gfolders.floorPlanFolder;
 //mysql
 const mysql = require('mysql')
 const connection = mysql.createConnection(config.mysql)

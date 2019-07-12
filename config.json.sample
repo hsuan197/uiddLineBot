@@ -15,5 +15,20 @@
     "channelId": "",
     "channelSecret": "",
     "channelAccessToken": ""
+  },
+  "Gdrive":{    
+    "client_id":"",
+    "client_secret":"",
+    "redirect_uri":"",
+    "token":{"access_token":"",
+      "refresh_token":"",
+      "scope":"https://www.googleapis.com/auth/drive",
+      "token_type":"Bearer",
+      "expiry_date":}
+  },
+  "Gfolders":{
+    "tmpFolder":"",
+    "picFolder":"",
+    "floorPlanFolder":""
   }
 }
