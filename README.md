@@ -12,6 +12,14 @@
   * change Liff URL
 
 ## change RichMenu
-  * people rich menu id: a7fefe716ff6dbbb76cc7bb6a214e85b
-  * volunteer rich menu id: 467a004a9f9f67aeb260b00ab0fb51ff
   * see https://developers.line.biz/en/docs/messaging-api/using-rich-menus/
+  * people:
+      * uri,"uri":"line://nv/location"
+      * postback,"data":"btn_2"
+      * postback,"data":"btn_3"
+      * postback,"data":"btn_4"
+  * volunteer
+      * postback,"data":"btn_11"
+      * postback,"data":"btn_12"
+      * postback,"data":"btn_13"  
+      * postback,"data":"btn_14"
