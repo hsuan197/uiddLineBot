@@ -1,5 +1,5 @@
+/*****set up*****/
 const config= require('./config');
-
 //https
 const fs = require('fs');
 const express = require('express');
@@ -10,7 +10,6 @@ const options = {
   key: fs.readFileSync(config.ssl.key),
   cert:fs.readFileSync(config.ssl.cert)
 }
-
 //linebot
 var linebot = require('linebot');
 var bot = linebot({
@@ -22,7 +21,6 @@ const line = require('@line/bot-sdk');
 const client = new line.Client({
   channelAccessToken: config.line.channelAccessToken
 });
-
 //google drive
 const {google} = require('googleapis');
 const oAuth2Client = new google.auth.OAuth2(config.Gdrive.client_id, config.Gdrive.client_secret, config.Gdrive.redirect_uri);
@@ -31,7 +29,6 @@ const async = require('async');
 const tmpFolder = '1wRNkxOKTFkpuZTS_ZG9A-8hRpo1PyqTe';
 const picFolder = '12XEk5qMiKvH_SJHUmCS4jYEm2p1_qOjU';
 const floorPlanFolder = '1qhdvioeCNSI07nXycfr5SNvb6pjbabya';
-
 //mysql
 const mysql = require('mysql')
 const connection = mysql.createConnection(config.mysql)
@@ -41,7 +38,6 @@ connection.connect(err => {
     process.exit()
   }
 })
-
 //listen
 var app = express();
 var linebotParser = bot.parser();
@@ -51,7 +47,8 @@ var server = https.createServer(options, app).listen(port, function() {
 	console.log(`port: ${port}`);
 })
 
-//temporary record
+/*****structure*****/
+//申報
 var tmp_records = {}
 const total_qNum = 6
 function Record(userId){
@@ -62,8 +59,7 @@ function Record(userId){
   this.lon = 0;
   this.lat = 0;
 }
-
-//changing
+//開始檢測
 var tmp_change = {}
 function Changing(userId, houseId, folderId){
   this.uId = userId;
@@ -72,13 +68,24 @@ function Changing(userId, houseId, folderId){
   this.fId = folderId;
   this.calling = false;
 }
-
+//聯絡民眾
 var tmp_replying = {}
 function Replying(statu, anotherId){
 	this.from = statu;
 	this.dst = anotherId;
 }
 
+/*****basic function*****/
+
+
+function sqlpromise (ins) {
+	return new Promise((resolve, reject) => {
+    connection.query(ins, (error, results, fields) => {
+      if (error) reject(error);
+      resolve(results);
+    })
+  })
+}
 
 const platform = require('./reply_platform.js')
 bot.on('postback', function (event) {
@@ -106,13 +113,12 @@ bot.on('postback', function (event) {
 
   //志工
   if (toDo == "info:"){
-      event.reply("info");    
+      event.reply("info");
   }
   else if(toDo == "pict:"){
       event.reply("請傳送圖片");
       pid = Number(mesg.substr(5))
       tmp_change[user].picId = pid;
-      //console.log(tmp_change[user]);
   } 
   else if(toDo == "end_:"){
     event.reply(platform.finalQ)
@@ -176,7 +182,7 @@ bot.on('postback', function (event) {
       event.reply(platform.qs[q]);
   }
 
-  //tacking picture
+  //taking picture
   else if(toDo == "next:"){
     the_record.qNum = 2;
     event.reply(platform.qs[the_record.qNum])
@@ -188,7 +194,6 @@ bot.on('postback', function (event) {
   }
 })
 
-//reply
 bot.on('message', function (event) {
   //get user
   var user = event.source.userId;
@@ -201,6 +206,8 @@ bot.on('message', function (event) {
 	}
 
   if (!(user in tmp_records) && !(user in tmp_change)){
+	  
+	//new record
     if (event.message.type == "location"){
       tmp_records[user] = new Record(user);
 
@@ -222,6 +229,7 @@ bot.on('message', function (event) {
       event.reply("請在選單中選擇需要服務")
     return;
   }
+  //exchangeing message
   else if(user in tmp_change){
     if(tmp_change[user].calling == true && event.message.type=="text"){
       tmp_change[user].calling == false;
@@ -249,14 +257,8 @@ bot.on('message', function (event) {
         console.log(id);
         tmp_change[user].hId = id;
         getData(event, id);
-				firstLookStatu(id);
+		firstLookStatu(id);
       }
-      return
-    }
-
-    if(mesg.substr(0, 5) == "test:"){
-      id = Number(mesg.substr(5))
-      var result = getData(event, id);
       return
     }
 
@@ -309,7 +311,6 @@ bot.on('message', function (event) {
     	});
   	});
 
-    //reply & change statu
     if(the_record.qNum == total_qNum){
       reply = '請再拍一張近照';
       the_record.qNum += 1
@@ -319,138 +320,18 @@ bot.on('message', function (event) {
     }
     event.reply(reply);
   }
-  //console.log(the_record);
 });
 
-//follow event
-bot.on('follow', (event)=>{
-  event.reply(platform.getYesNo("是否開始檢測", "開始檢測", "取消"));
-})
-
-
-//write database & upload images & delete local images
-function WriteDB(the_record){
-  connection.query('select count(id) from  record', function (error, results, fields) {
-    if (error) throw error
-    var num = results[0]['count(id)'];
-    var t1 = new Date();
-    var time = t1.getFullYear() * 10000 + (t1.getMonth()+1)*100 + t1.getDate();
-
-
-    connection.query(`INSERT INTO record(lineId, id, time) VALUES ("${the_record.id}", ${num}, ${time});`);
-    connection.query(`INSERT INTO location(id, lat, lng, statu, address) VALUES (${num}, ${the_record.lat}, ${the_record.lon}, '0', '${the_record.address}');`);
-    UploadFolder(oAuth2Client, num.toString(), num, the_record);
-  })
-}
-
-function Update(auth, changing, path, event){
-  const drive = google.drive({version: 'v3', auth});
-  //console.log('update')
-  //console.log(changing)
-  var fileMetadata = {
-    'name': changing.picId + ".jpg",
-  	parents: [changing.fId]
-	};
-	var media = {
-  	mimeType: 'image/jpg',
-  	body: fs.createReadStream(path)
-	};
-	drive.files.create({
-  	resource: fileMetadata,
-  	media: media,
-  	fields: 'id'
-	}, async function (err, file) {
-  	if (err);
-    	//console.error(err);
-	  else{
-      await sqlpromise (`UPDATE crack SET fileId = '${file.data.id}' where id = ${changing.hId} and picId = ${changing.picId}`);
-      sendPicture(event);
-      fs.unlinkSync(path);
-    }
-  });
-}
-
-function Upload(drive, folderId, path, filename, houseId){
-  var f = filename.split("_");
-
-  var fileMetadata = {
-    'name': f[4] + ".jpg",
-  	parents: [folderId]
-	};
-	var media = {
-  	mimeType: 'image/jpg',
-  	body: fs.createReadStream(path + filename)
-	};
-	drive.files.create({
-  	resource: fileMetadata,
-  	media: media,
-  	fields: 'id'
-	}, function (err, file) {
-  	if (err);
-    	//console.error(err);
-	  else{
-      var cT = (f[3] > 2)? f[3] - 3 : f[3];
-      cT = 1 << cT;
-      var info = (f[3] > 2)? 1 : 0;
-      info =  info << (f[3] - 3)
-
-      var cP = 1 << f[2];
-
-      var sqlins = 'INSERT INTO crack (id, picId, floor, spaceType, crackPart, crackType, info, fileId)' + 
-                    `VALUES (${houseId}, ${f[4]}, ${f[0]}, ${f[1]}, ${cP}, ${cT}, ${info}, '${file.data.id}');`;
-      connection.query(sqlins);
-      fs.unlinkSync(path + filename);
-    }
-  });
-}
-
-function UploadFolder(auth, folder, num, the_record){
-  const drive = google.drive({version: 'v3', auth});
-	var fileMetadata = {
-  	'name': folder,
-    parents:[picFolder],
-  	mimeType: 'application/vnd.google-apps.folder'
-	};
-	drive.files.create({
-  	resource: fileMetadata,
-  	fields: 'id'
-	}, function (err, file) {
-  	if (err);
-    	//console.error(err);
-  	else {
-      var folderId = file.data.id;
-      var path = './tmp/' + the_record['id'] + '/'
-      connection.query(`INSERT INTO house(id, age, total_floor, folderId) VALUES (${num},  ${the_record.data[0]}, ${the_record.data[1]}, '${folderId}');`);
-      fs.readdirSync(path).forEach(file => {
-			  Upload(drive, folderId, path, file, Number(folder));
-      });
-  	}
-	});
-}
-
-async function Move( auth, hId, folderForm, folderIdTo){
-  const drive = google.drive({version: 'v3', auth});
-  var house = await sqlpromise(`select * from house, location where house.id=location.id and house.id = ${hId}`);
- 	drive.files.update({
- 	  fileId: house[0]['folderId'],
- 	  addParents: folderIdTo,
- 	  removeParents: folderForm,
- 	  fields: 'id, parents'
- 	}, function (err, file) {
- 	  if (err);
- 	});
-}
-
+/**********for detect*********/
+//一開始的房屋資訊
 async function getData(event, id) {
   const house = await sqlpromise(`select * from house, location where house.id=location.id and house.id = ${id}`);
   if (house.length < 1)
     return false;
-  //console.log(house)
 
   var user = event.source.userId;
   tmp_change[user].hId = id;
   tmp_change[user].fId = house[0].folderId;
-  //console.log(tmp_change[user])
 
   //prepare dir
   var dir = './tmp/' + user;
@@ -468,6 +349,25 @@ async function getData(event, id) {
   return true;
 }
 
+//傳送劣化資訊
+async function sendPicture(event){
+  var user = event.source.userId;
+  var crack = await sqlpromise(`select * from crack where id = '${tmp_change[user].hId}' order by picId asc `);
+  var floor = await sqlpromise(`select * from floor_plan where id = '${tmp_change[user].hId}' order by floor asc `);
+  console.log(floor)
+  event.reply(platform.sendPic(crack, floor));
+}
+
+//選擇平面圖樓層
+async function sendFloors(event){
+  var user = event.source.userId;
+	console.log(tmp_change)
+  var floor = await sqlpromise(`select DISTINCT floor from crack where id = '${tmp_change[user].hId}' order by floor asc `);
+  console.log(floor)
+  event.reply(platform.selectFloor(tmp_change[user].hId, floor))
+}
+
+//儲存更改資料
 async function updateSql(f, event){
   var sqlins = `UPDATE crack SET crackType=${f[3]}, info=${f[4]},crackPart=${f[5]},crcakCorner=${f[6]},`
     +`x=${f[7]},y=${f[8]},length=${f[9]},width=${f[10]} where id = ${f[1]} and picId = ${f[2]}`;
@@ -478,77 +378,21 @@ async function updateSql(f, event){
   sendPicture(event)
 }
 
-async function updateStatu(id, newStatu){
-  console.log(id, newStatu);
-  var sqlins = `UPDATE location SET statu='${newStatu}' where id = '${id}'`;
-  await sqlpromise(sqlins);
-}
+//write database & upload images & delete local images
+function WriteDB(the_record){
+  connection.query('select count(id) from  record', function (error, results, fields) {
+    if (error) throw error
+    var num = results[0]['count(id)'];
+    var t1 = new Date();
+    var time = t1.getFullYear() * 10000 + (t1.getMonth()+1)*100 + t1.getDate();
 
-async function firstLookStatu(id){
-  console.log(id, 1)
-	var sqlins =  `select statu from location where id = ${id}`;
-	var s = await sqlpromise(sqlins);
-	if(s[0].statu != '0')
-		return 
-	else
-		updateStatu(id, 1);
-}
-
-
-async function sendPicture(event){
-  var user = event.source.userId;
-  var crack = await sqlpromise(`select * from crack where id = '${tmp_change[user].hId}' order by picId asc `);
-  var floor = await sqlpromise(`select * from floor_plan where id = '${tmp_change[user].hId}' order by floor asc `);
-  console.log(floor)
-  event.reply(platform.sendPic(crack, floor));
-}
-
-async function sendFloors(event){
-  var user = event.source.userId;
-	console.log(tmp_change)
-  var floor = await sqlpromise(`select DISTINCT floor from crack where id = '${tmp_change[user].hId}' order by floor asc `);
-  console.log(floor)
-  event.reply(platform.selectFloor(tmp_change[user].hId, floor))
-}
-
-function sqlpromise (ins) {
-	return new Promise((resolve, reject) => {
-    connection.query(ins, (error, results, fields) => {
-      if (error) reject(error);
-      resolve(results);
-    })
+    connection.query(`INSERT INTO record(lineId, id, time) VALUES ("${the_record.id}", ${num}, ${time});`);
+    connection.query(`INSERT INTO location(id, lat, lng, statu, address) VALUES (${num}, ${the_record.lat}, ${the_record.lon}, '0', '${the_record.address}');`);
+    UploadFolder(oAuth2Client, num.toString(), num, the_record);
   })
 }
 
-
-function UploadFP(auth, hId, floor, file){
-  const drive = google.drive({version: 'v3', auth});
-  var fileMetadata = {
-    'name': file,
-  	parents: [floorPlanFolder]
-	};
-	var media = {
-  	mimeType: 'image/png',
-  	body: fs.createReadStream(`FloorPlan/${file}`)
-	};
-	drive.files.create({
-  	resource: fileMetadata,
-  	media: media,
-  	fields: 'id'
-	}, async function (err, f) {
-  	if (err)
-    	console.error(err);
-	  else{
-      var fp = await sqlpromise(`select * from floor_plan where id=${hId} and floor=${floor}`);
-      if(fp.length > 0)
-        connection.query(`UPDATE floor_plan SET fileId = '${f.data.id}' where id = ${hId} and floor = ${floor}`);
-      else
-        connection.query(`INSERT INTO floor_plan(id, floor, fileId) VALUES (${hId}, ${floor}, '${f.data.id}');`);
-    }
-  });
-}
-
-
+/**********for exchange message**********/
 async function sendMessage( mesg, from, senderId, hId){
 	if(from == 1) //志工送出
 	{
@@ -557,12 +401,29 @@ async function sendMessage( mesg, from, senderId, hId){
 		bot.push(dst, platform.sendMesg(mesg, senderId, 1));
 	}	
 }
-
 async function sendMes( mesg, from, senderId, dst){
 		var dst = record[0].lineId;
 	bot.push(dst, platform.sendMesg(mesg, senderId, 1));
 }
 
+/**********for watch statu**********/
+//初始狀態
+async function firstLookStatu(id){
+	var sqlins =  `select statu from location where id = ${id}`;
+	var s = await sqlpromise(sqlins);
+	if(s[0].statu != '0')
+		return 
+	else
+		updateStatu(id, 1);
+}
+//更新狀態
+async function updateStatu(id, newStatu){
+  console.log(id, newStatu);
+  var sqlins = `UPDATE location SET statu='${newStatu}' where id = '${id}'`;
+  await sqlpromise(sqlins);
+}
+
+//查看狀態
 var statuMean = [
   "等待志工處理",
   "志工已查看，請民眾留意訊息",
@@ -573,7 +434,6 @@ var statuMean = [
   "已完成訪查，評估中",
   "已完成訪查，可安心住"
 ]
-
 async function sendStatu(event){
 	var sqlins =  `select statu, record.id, time from record, location where record.id = location.id and record.lineId='${event.source.userId}'`;
 	var s = await sqlpromise(sqlins);
@@ -589,6 +449,7 @@ async function sendStatu(event){
   }
 }
 
+/**********for webs*********/
 /*-----for summary------*/
 app.get('/store', (req, res) => {
   console.log(req.query)
@@ -652,4 +513,136 @@ app.post('/drawSave', (req, res) => {
       UploadFP(oAuth2Client, req.body.hId, req.body.floor, file_name);
   });
 })
+/*-----*/
+
+/**********for drive*********/
+/*-----Volunteer change picture-----*/
+function Update(auth, changing, path, event){
+  const drive = google.drive({version: 'v3', auth});
+  var fileMetadata = {
+    'name': changing.picId + ".jpg",
+  	parents: [changing.fId]
+	};
+	var media = {
+  	mimeType: 'image/jpg',
+  	body: fs.createReadStream(path)
+	};
+	drive.files.create({
+  	resource: fileMetadata,
+  	media: media,
+  	fields: 'id'
+	}, async function (err, file) {
+  	if (err);
+    	//console.error(err);
+	  else{
+      await sqlpromise (`UPDATE crack SET fileId = '${file.data.id}' where id = ${changing.hId} and picId = ${changing.picId}`);
+      sendPicture(event);
+      fs.unlinkSync(path);
+    }
+  });
+}
+/*-----*/
+
+/*------上傳檢測照片-----*/
+function Upload(drive, folderId, path, filename, houseId){
+  var f = filename.split("_");
+
+  var fileMetadata = {
+    'name': f[4] + ".jpg",
+  	parents: [folderId]
+	};
+	var media = {
+  	mimeType: 'image/jpg',
+  	body: fs.createReadStream(path + filename)
+	};
+	drive.files.create({
+  	resource: fileMetadata,
+  	media: media,
+  	fields: 'id'
+	}, function (err, file) {
+  	if (err)
+    	console.error(err);
+	  else{
+      var cT = (f[3] > 2)? f[3] - 3 : f[3];
+      cT = 1 << cT;
+      var info = (f[3] > 2)? 1 : 0;
+      info =  info << (f[3] - 3)
+
+      var cP = 1 << f[2];
+
+      var sqlins = 'INSERT INTO crack (id, picId, floor, spaceType, crackPart, crackType, info, fileId)' + 
+                    `VALUES (${houseId}, ${f[4]}, ${f[0]}, ${f[1]}, ${cP}, ${cT}, ${info}, '${file.data.id}');`;
+      connection.query(sqlins);
+      fs.unlinkSync(path + filename);
+    }
+  });
+}
+
+function UploadFolder(auth, folder, num, the_record){
+  const drive = google.drive({version: 'v3', auth});
+	var fileMetadata = {
+  	'name': folder,
+    parents:[picFolder],
+  	mimeType: 'application/vnd.google-apps.folder'
+	};
+	drive.files.create({
+  	resource: fileMetadata,
+  	fields: 'id'
+	}, function (err, file) {
+  	if (err)
+    	console.error(err);
+  	else {
+      var folderId = file.data.id;
+      var path = './tmp/' + the_record['id'] + '/'
+      connection.query(`INSERT INTO house(id, age, total_floor, folderId) VALUES (${num},  ${the_record.data[0]}, ${the_record.data[1]}, '${folderId}');`);
+      fs.readdirSync(path).forEach(file => {
+			  Upload(drive, folderId, path, file, Number(folder));
+      });
+  	}
+	});
+}
+/*-----*/
+
+/*-----move from a folder to another-----*/
+async function Move( auth, hId, folderForm, folderIdTo){
+  const drive = google.drive({version: 'v3', auth});
+  var house = await sqlpromise(`select * from house, location where house.id=location.id and house.id = ${hId}`);
+ 	drive.files.update({
+ 	  fileId: house[0]['folderId'],
+ 	  addParents: folderIdTo,
+ 	  removeParents: folderForm,
+ 	  fields: 'id, parents'
+ 	}, function (err, file) {
+ 	  if (err);
+ 	});
+}
+/*-----*/
+
+/*-----upload floor plan-----*/
+function UploadFP(auth, hId, floor, file){
+  const drive = google.drive({version: 'v3', auth});
+  var fileMetadata = {
+    'name': file,
+  	parents: [floorPlanFolder]
+	};
+	var media = {
+  	mimeType: 'image/png',
+  	body: fs.createReadStream(`FloorPlan/${file}`)
+	};
+	drive.files.create({
+  	resource: fileMetadata,
+  	media: media,
+  	fields: 'id'
+	}, async function (err, f) {
+  	if (err)
+    	console.error(err);
+	  else{
+      var fp = await sqlpromise(`select * from floor_plan where id=${hId} and floor=${floor}`);
+      if(fp.length > 0)
+        connection.query(`UPDATE floor_plan SET fileId = '${f.data.id}' where id = ${hId} and floor = ${floor}`);
+      else
+        connection.query(`INSERT INTO floor_plan(id, floor, fileId) VALUES (${hId}, ${floor}, '${f.data.id}');`);
+    }
+  });
+}
 /*-----*/
