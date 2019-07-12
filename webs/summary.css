@@ -1,0 +1,158 @@
+*{
+  margin: 0; 
+  padding: 0;
+}
+
+#pic1{
+  top:55vw;
+  position: absolute;
+  width: 90vw;
+  left: 5vw;
+}
+
+.wrap { 
+  position: relative; 
+}
+
+#pic { 
+  position: absolute;
+  width:50px;
+  height:50px;
+}
+
+#bigImg{
+  position: absolute;
+  width:50px;
+  height:50px;
+
+}
+
+.marker{
+  position: absolute;
+  width:100px;
+  height:100px;
+  background-image:url('./img/marker.png');
+  background-size:cover
+}
+
+.marker div{
+  position:absolute;
+	width: 100%;
+  height: 50%;
+  font-size: 50px;
+  top: 20px;
+	left: 38px;
+}
+
+
+.parentUl{
+  position:relative;
+}
+
+#parentUl{
+  position:relative;
+}
+
+.fbtns{
+		width: 15vw;
+    height: 12vw;
+    font-size: 5vw;
+    border-radius: 0vw;
+    background-color: #ffffff;
+}
+
+#floor{
+  position:absolute;
+  top:2vw;
+  width:96vw;
+  height:13vw;
+  left:2vw;
+  overflow-y: hidden;
+  overflow-x: scroll;
+}
+
+#floor2{
+  position: absolute;
+  height:100%;
+  top:0;
+  width:max-content;
+}
+
+#scroll{
+  position:absolute;
+  top:15vw;
+  width:100%;
+  height:36vw; 
+  overflow-y: hidden;
+  overflow-x: scroll;
+  color:#ffffff;
+  font-size:20vw;
+}
+
+#scroll_item{
+  position: absolute;
+  height:90%;
+  top:5%;
+  width:max-content;
+}
+
+#scroll_item img{
+  height: 100%; 
+}
+
+#scroll_item div{
+	width: 20vw;
+  height: 100%;
+  border-style: solid;
+  border-width: 10px;
+  border-color: black;
+  border-radius: 20px;
+  margin-left: 5vw;
+  margin-right: 0;
+  display: inline-block;
+	background-size: cover;
+}
+
+#popup{
+	position:fixed;
+	top:55vw;
+	bottom: 0;
+	width:100%;
+	background-color:hsla(0, 0%, 0%, 0.6);
+}
+
+#closepopup{
+	position:absolute;
+	top:2vw;
+	right:2vw;
+	width:5vw;
+	height:5vw;
+}
+
+#popcontent{
+	position:absolute;
+	top:0;
+	width:84vw;
+	margin: 8vw;
+	margin-bottom:0;
+	bottom: 0;
+ 	overflow-x: hidden;  overflow-y: scroll;
+}
+
+#popcontent img{
+	position: absolute;
+	width:45%;
+	top:38vw;	
+}
+
+h1{
+	text-align:center;
+	color:#ffffff;
+	font-size: 8vw;
+}
+
+h2{
+	color:#ffffff;
+	font-size: 6vw;
+}
+
