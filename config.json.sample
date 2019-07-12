@@ -6,10 +6,10 @@
     "cert": "/home/uidd2019/ssl/certificate.crt"
   },
   "mysql": {
-    "database": "uidd2019_groupD",
-    "host": "localhost",
+    "database": "",
+    "host": "",
     "password": "",
-    "user": "uidd2019_groupD"
+    "user": ""
   },
   "line":{
     "channelId": "",
