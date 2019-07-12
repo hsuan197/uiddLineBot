@@ -8,4 +8,4 @@
   * run 
     * `node lineser.js`
   * sign in https://developers.line.biz/en/
-  * change Webhook URL to `https://luffy.ee.ncku.edu.tw:your_port_number`
+  * change Webhook URL
