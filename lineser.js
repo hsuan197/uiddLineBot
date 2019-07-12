@@ -42,18 +42,14 @@ connection.connect(err => {
   }
 })
 
-
 //listen
 var app = express();
 var linebotParser = bot.parser();
 app.post('/', linebotParser);
-
 app.use(express.static(`${__dirname}/webs`))
 var server = https.createServer(options, app).listen(port, function() {
 	console.log(`port: ${port}`);
 })
-
-
 
 //temporary record
 var tmp_records = {}
@@ -524,26 +520,6 @@ function sqlpromise (ins) {
   })
 }
 
-//for 裂化地圖
-app.get('/mapStart', (req, res) => {
-  mapData(res)
-})
-
-//for 平面圖
-app.use(express.urlencoded());
-app.use(express.json());
-app.post('/drawSave', (req, res) => {
-  var file_name = `${req.body.hId}_${req.body.floor}.png`
-  var base64Data = req.body.imgBase64.replace(/^data:image\/png;base64,/, "");
-  fs.writeFile(`FloorPlan/${file_name}`, base64Data, 'base64', function(err) {
-    console.log(req.body.hId);
-    //console.log(req.body);
-    if(err)  
-      console.log(err);
-    else
-      UploadFP(oAuth2Client, req.body.hId, req.body.floor, file_name);
-  });
-})
 
 function UploadFP(auth, hId, floor, file){
   const drive = google.drive({version: 'v3', auth});
@@ -572,30 +548,6 @@ function UploadFP(auth, hId, floor, file){
   });
 }
 
-async function mapData(res) {
-  const house = await sqlpromise(`select * from house, location, record where house.id=location.id and house.id=record.id`);
-  for(let i = 0; i < house.length; i++){   
-    const c_num = await sqlpromise(`select count(picId) from crack where id = ${house[i].id}`);
-    var reply = `總樓層: ${house[i]['total_floor']}<br>`;
-    reply += `屋齡: ${house[i]['age']}<br>`;
-    reply += `劣化紀錄: ${c_num[0]['count(picId)']>>1}筆`;
-
-    house[i]['text'] = reply;
-
-    const crack = await sqlpromise(`select crackType, info from crack where id=${i}`);
-    house[i]['info'] = 0;
-    house[i]['dangerCrack'] = false;
-    for(let j = 0; j < crack.length; j++){
-      if(crack[j].crackType > 3){
-        house[i]['dangerCrack'] = true;
-      }
-      if(crack[j].info > house[i]['info'])
-        house[i]['info'] = crack[j].info; 
-    }  
-  }
-  res.send(house);
-}
-
 
 async function sendMessage( mesg, from, senderId, hId){
 	if(from == 1) //志工送出
@@ -621,6 +573,7 @@ var statuMean = [
   "已完成訪查，評估中",
   "已完成訪查，可安心住"
 ]
+
 async function sendStatu(event){
 	var sqlins =  `select statu, record.id, time from record, location where record.id = location.id and record.lineId='${event.source.userId}'`;
 	var s = await sqlpromise(sqlins);
@@ -635,3 +588,68 @@ async function sendStatu(event){
     event.reply('未找到資料');
   }
 }
+
+/*-----for summary------*/
+app.get('/store', (req, res) => {
+  console.log(req.query)
+  var ins = `update crack set x = ${req.query.X}, y = ${req.query.Y} where id = ${req.query.Id} and picId = ${req.query.Pid}`
+  connection.query(ins)
+  var ins = `update crack set x = ${req.query.X}, y = ${req.query.Y} where id = ${req.query.Id} and picId = ${req.query.Pid + 1}`
+  connection.query(ins)
+})
+
+app.get('/start', (req, res) => {
+  ans(res, req.query.id)
+})
+
+async function ans(res, id){
+  var crack = await sqlpromise(`select * from crack where id = ${id} order by picId asc`);
+  var floor_plan = await sqlpromise(`select * from floor_plan where id = ${id} order by floor asc`);
+  res.send([crack, floor_plan]);
+}
+/*-----*/
+
+/*-----for map-----*/
+app.get('/mapStart', (req, res) => {
+  mapData(res)
+})
+
+async function mapData(res) {
+  const house = await sqlpromise(`select * from house, location, record where house.id=location.id and house.id=record.id`);
+  for(let i = 0; i < house.length; i++){   
+    const c_num = await sqlpromise(`select count(picId) from crack where id = ${house[i].id}`);
+    var reply = `總樓層: ${house[i]['total_floor']}<br>`;
+    reply += `屋齡: ${house[i]['age']}<br>`;
+    reply += `劣化紀錄: ${c_num[0]['count(picId)']>>1}筆`;
+
+    house[i]['text'] = reply;
+
+    const crack = await sqlpromise(`select crackType, info from crack where id=${i}`);
+    house[i]['info'] = 0;
+    house[i]['dangerCrack'] = false;
+    for(let j = 0; j < crack.length; j++){
+      if(crack[j].crackType > 3){
+        house[i]['dangerCrack'] = true;
+      }
+      if(crack[j].info > house[i]['info'])
+        house[i]['info'] = crack[j].info; 
+    }  
+  }
+  res.send(house);
+}
+/*-----*/
+
+/*-----for draw-----*/
+app.use(express.urlencoded());
+app.use(express.json());
+app.post('/drawSave', (req, res) => {
+  var file_name = `${req.body.hId}_${req.body.floor}.png`
+  var base64Data = req.body.imgBase64.replace(/^data:image\/png;base64,/, "");
+  fs.writeFile(`FloorPlan/${file_name}`, base64Data, 'base64', function(err) {
+    if(err)  
+      console.log(err);
+    else
+      UploadFP(oAuth2Client, req.body.hId, req.body.floor, file_name);
+  });
+})
+/*-----*/

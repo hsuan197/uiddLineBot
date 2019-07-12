@@ -183,6 +183,6 @@ function sendStart(hid){
 }
 
 function lookRecord(hid){
-  window.open(`http://luffy.ee.ncku.edu.tw:12398?hid=${hid}`);
+  window.open(`line://app/1567045903-bYwo01OP?hid=${hid}`);
 }
 
