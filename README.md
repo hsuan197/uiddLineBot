@@ -1,4 +1,7 @@
 # Linebot
+## 說明
+- https://hackmd.io/qYylEc61TyeHS3kT_0Zv4A
+
 ## install & run
   * install
     * `yarn`
@@ -13,12 +16,13 @@
 
 ## change RichMenu
   * see https://developers.line.biz/en/docs/messaging-api/using-rich-menus/
-  * people:
+  * necessary button
+    * people:
       * uri,"uri":"line://nv/location"
       * postback,"data":"btn_2"
       * postback,"data":"btn_3"
       * postback,"data":"btn_4"
-  * volunteer
+    * volunteer
       * postback,"data":"btn_11"
       * postback,"data":"btn_12"
       * postback,"data":"btn_13"  
