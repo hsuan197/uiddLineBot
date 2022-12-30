@@ -31,8 +31,8 @@
       
 ## demo影片
   * 民眾版
-    * https://drive.google.com/file/d/1NKd8wnxtAaVzSXVk5_aHM10epHDfE_ma/view?usp=sharing
+    * https://drive.google.com/file/d/1OXv-4znnd_pfktZEporkZgYGhGoS90vz/view?usp=share_link
   * 志工版
     * 填寫 https://drive.google.com/file/d/1252R9_7vcs2i0JlHVgxD8MNYlGbWIC10/view?usp=sharing
-    * 查看 https://drive.google.com/file/d/1Qg0hlwerjObaRCx-1qq9xJDn9n0UIiCU/view?usp=sharing
+    * 查看 https://drive.google.com/file/d/13JbhbMrF2Bc9tVryFOuizHPdyVV4mggB/view?usp=share_link
     
